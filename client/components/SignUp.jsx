@@ -15,7 +15,7 @@ import {
 } from "@heroui/react";
 import { useEffect } from "react";
 
-function SignUp({ setUser }) {
+function SignUp({ setUser, socket }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,19 +33,20 @@ function SignUp({ setUser }) {
     const data = Object.fromEntries(new FormData(e.currentTarget));
 
     // Update parent state
+    socket.emit("user", data.name);
     setUser(data.name);
     sessionStorage.setItem("user", data.name);
   };
 
   return (
     <div
-      className="bg-lime-100 flex items-center justify-center min-h-screen 
+      className="bg-gradient-to-br from-emerald-200 via-green-100 to-lime-200 flex items-center justify-center min-h-screen 
   w-full"
     >
       {loading ? (
         <Spinner />
       ) : (
-        <Card className="max-w-[300px]">
+        <Card className="max-w-[300px] bg-transparent">
           <CardHeader className="flex gap-3">
             <Image
               alt="maderoom logo"
@@ -72,7 +73,9 @@ function SignUp({ setUser }) {
                 type="text"
                 autoComplete="off"
               />
-              <Button type="submit">Join</Button>
+              <Button type="submit" className="bg-emerald-400">
+                Join
+              </Button>
             </Form>
           </CardBody>
           <Divider />

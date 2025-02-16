@@ -1,7 +1,7 @@
 import React from "react";
 
 function Messages() {
-  return <div>Messages</div>;
+  return <div className="h-[90vh]">Messages</div>;
 }
 
 export default Messages;
