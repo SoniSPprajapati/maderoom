@@ -3,18 +3,51 @@ import { Button, Input } from "@heroui/react";
 import { SendHorizonal, UploadIcon } from "lucide-react";
 import React from "react";
 
-function Inputs() {
+function Inputs({ socket, user, setMessages }) {
   const [input, setInput] = useState("");
   const inputFile = useRef(null);
+
+  const onFileUpload = (e) => {
+    const file = e.target.files[0];
+
+    // Convert to base64
+    var reader = new FileReader();
+    reader.onloadend = function () {
+      const message = {
+        type: "image",
+        content: reader.result,
+        name: user,
+        id: socket.id,
+      };
+
+      socket.emit("message", message);
+      setMessages((prevState) => [...prevState, message]);
+    };
+
+    reader.readAsDataURL(file);
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     if (!input) {
-      inputFile.current.click();
+      return inputFile.current.click();
     }
 
-    console.log(input);
+    const message = {
+      type: input.startsWith("http")
+        ? "link"
+        : input.startsWith("@ai")
+        ? "ai"
+        : "text",
+      content: input,
+      name: user,
+      id: socket.id,
+    };
+
+    socket.emit("message", message);
+    setMessages((prevState) => [...prevState, message]);
+
     // Empty input field
     setInput("");
   };
@@ -31,6 +64,8 @@ function Inputs() {
         size="lg"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        radius="none"
+        className="rounded-none sm:rounded-md"
       />
 
       <input
@@ -38,10 +73,15 @@ function Inputs() {
         name="file"
         accept="image/png, image/gif, image/jpeg"
         ref={inputFile}
+        onChange={onFileUpload}
         hidden
       />
 
-      <Button className="bg-emerald-300" size="lg" type="submit">
+      <Button
+        className="bg-emerald-300 rounded-none sm:rounded-md"
+        size="lg"
+        type="submit"
+      >
         {input ? <SendHorizonal /> : <UploadIcon />}
       </Button>
     </form>

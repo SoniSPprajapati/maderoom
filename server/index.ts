@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 
 const PORT = Bun.env.PORT || 3001;
 
-const app = express();
+const app = express();  
 const server = http.createServer(app);
 
 app.get("/", (req, res) => {
@@ -12,12 +12,18 @@ app.get("/", (req, res) => {
 });
 
 // SOCKET.io
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 io.on("connection", (socket) => {
   console.log(`Socket connected with id: ${socket.id}`);
 
   socket.on("message", (msg) => {
+    console.log(msg);
+
     // Schema
     // {id: UUID, name: String, type: "text/image/ai/link", content: String}
     socket.broadcast.emit("new_message", msg);
@@ -30,6 +36,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("user", (name) => {
+    console.log("New user joined:", name);
     socket.broadcast.emit("new_user", name);
   });
 });
