@@ -1,29 +1,50 @@
+import { useState } from "react";
+
 import {
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Divider,
-    Link,
-    Image,
-    Input,
-    Button,
-    Form,
-  } from "@heroui/react";
-  
-  function SignUp() {
-    const onSubmit = (e) => {
-      e.preventDefault();
-  
-      const data = Object.fromEntries(new FormData(e.currentTarget));
-      console.log(data.name);
-    };
-  
-    return (
-      <div
-        className="bg-lime-100 flex items-center justify-center min-h-screen 
-    w-full"
-      >
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Divider,
+  Link,
+  Image,
+  Input,
+  Button,
+  Form,
+  Spinner,
+} from "@heroui/react";
+import { useEffect } from "react";
+
+function SignUp({ setUser }) {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const user = sessionStorage.getItem("user");
+    setLoading(false);
+
+    if (user) {
+      setUser(user);
+    }
+  }, []);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    const data = Object.fromEntries(new FormData(e.currentTarget));
+
+    // Update parent state
+    setUser(data.name);
+    sessionStorage.setItem("user", data.name);
+  };
+
+  return (
+    <div
+      className="bg-lime-100 flex items-center justify-center min-h-screen 
+  w-full"
+    >
+      {loading ? (
+        <Spinner />
+      ) : (
         <Card className="max-w-[300px]">
           <CardHeader className="flex gap-3">
             <Image
@@ -65,8 +86,9 @@ import {
             </Link>
           </CardFooter>
         </Card>
-      </div>
-    );
-  }
-  
-  export default SignUp;
+      )}
+    </div>
+  );
+}
+
+export default SignUp;
