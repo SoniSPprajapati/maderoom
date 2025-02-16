@@ -16,6 +16,22 @@ const io = new Server(server);
 
 io.on("connection", (socket) => {
   console.log(`Socket connected with id: ${socket.id}`);
+
+  socket.on("message", (msg) => {
+    // Schema
+    // {id: UUID, name: String, type: "text/image/ai/link", content: String}
+    socket.broadcast.emit("new_message", msg);
+  });
+
+  socket.on("typing", (obj) => {
+    // Schema
+    // {name: String, status: Boolean}
+    socket.broadcast.emit("user_typing", obj);
+  });
+
+  socket.on("user", (name) => {
+    socket.broadcast.emit("new_user", name);
+  });
 });
 
 server.listen(PORT, () => {
