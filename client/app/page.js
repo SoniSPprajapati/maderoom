@@ -18,6 +18,12 @@ export default function Home() {
     });
   }, []);
 
+  useEffect(() => {
+    socket.on("new_user", (name) => {
+      setMessages((prevState) => [...prevState, { type: "user", name: name }]);
+    });
+  }, []);
+
   return (
     <HeroUIProvider>
       <div>

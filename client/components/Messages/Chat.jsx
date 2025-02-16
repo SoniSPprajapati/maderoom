@@ -1,9 +1,13 @@
 import { Card, CardBody, Image } from "@heroui/react";
+import NewUser from "./NewUser";
 
 function Chat({ message, own }) {
   return (
     <Card className={`w-fit bg-transparent ${own && "bg-emerald-100 ml-auto"}`}>
       <CardBody>
+        {/* For new user */}
+        {message.type === "user" && <NewUser name={message.name} />}
+
         {/* For image message */}
         {message.type === "image" && (
           <Image width="400" src={message.content} />
