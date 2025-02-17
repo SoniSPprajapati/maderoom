@@ -5,7 +5,7 @@ import { Inputs, SignUp, Messages } from "@/components";
 import { io } from "socket.io-client";
 
 const socket = io(
-  "https://effective-dollop-jjqqj7p675p72q444-8000.app.github.dev/"
+  "https://psychic-sniffle-694495x64qrw24jr-3001.app.github.dev/"
 );
 
 export default function Home() {
